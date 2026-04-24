@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Liberdade Financeira — Do Zero ao Viver de Renda</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #070A0F;
+    --bg2: #0C1117;
+    --bg3: #111820;
+    --gold: #C9A84C;
+    --gold2: #F0C060;
+    --gold-dim: #7A6230;
+    --white: #F0EDE8;
+    --gray: #8A9BB0;
+    --accent: #1A3A5C;
+    --green: #22C55E;
+    --red: #EF4444;
+    --border: rgba(201,168,76,0.18);
+    --glow: rgba(201,168,76,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NOISE TEXTURE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* ANNOUNCEMENT BAR */
+  .bar {
+    background: linear-gradient(90deg, #0a1628, #1a2a18, #0a1628);
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+    padding: 10px 20px;
+    font-size: 13px;
+    color: var(--gold2);
+    letter-spacing: 0.05em;
+    font-weight: 500;
+  }
+  .bar span { color: #fff; margin: 0 6px; }
+
+  /* TIMER */
+  .timer-bar {
+    background: linear-gradient(90deg, #0d0d0d, #1a1200, #0d0d0d);
+    padding: 12px 20px;
+    text-align: center;
+    border-bottom: 1px solid rgba(201,168,76,0.25);
+  }
+  .timer-label { font-size: 12px; color: var(--gray); text-transform: uppercase; letter-spacing: 0.1em; }
+  .timer-digits {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    margin-top: 4px;
+  }
+  .digit-block {
+    background: #1a1200;
+    border: 1px solid var(--gold-dim);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-family: 'Space Mono', monospace;
+    font-size: 22px;
+    color: var(--gold2);
+    min-width: 52px;
+    text-align: center;
+    line-height: 1;
+  }
+  .digit-sep { color: var(--gold); font-size: 20px; font-weight: bold; }
+  .digit-unit { font-size: 10px; color: var(--gray); display: block; margin-top: 2px; font-family: 'DM Sans', sans-serif; }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    padding: 80px 20px 60px;
+    text-align: center;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -200px; left: 50%; transform: translateX(-50%);
+    width: 800px; height: 800px;
+    background: radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 65%);
+    pointer-events: none;
+  }
+
+  .badge {
+    display: inline-block;
+    border: 1px solid var(--gold);
+    color: var(--gold2);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 6px 18px;
+    border-radius: 2px;
+    margin-bottom: 28px;
+    font-weight: 600;
+    background: rgba(201,168,76,0.07);
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 6vw, 68px);
+    font-weight: 900;
+    line-height: 1.08;
+    color: var(--white);
+    max-width: 900px;
+    margin: 0 auto 20px;
+    letter-spacing: -0.02em;
+  }
+  .hero h1 em {
+    font-style: normal;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold2) 50%, #E8B44C 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: clamp(15px, 2vw, 19px);
+    color: var(--gray);
+    max-width: 680px;
+    margin: 0 auto 40px;
+    font-weight: 300;
+    line-height: 1.7;
+  }
+
+  /* STATS ROW */
+  .stats-row {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    flex-wrap: wrap;
+    max-width: 700px;
+    margin: 0 auto 50px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--bg2);
+  }
+  .stat-item {
+    flex: 1;
+    min-width: 140px;
+    padding: 20px 16px;
+    text-align: center;
+    border-right: 1px solid var(--border);
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--gold2);
+    line-height: 1;
+  }
+  .stat-label { font-size: 11px; color: var(--gray); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
+
+  /* PRODUCTS SECTION */
+  .section { padding: 70px 20px; }
+  .section-label {
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(26px, 4vw, 44px);
+    text-align: center;
+    font-weight: 700;
+    margin-bottom: 14px;
+    line-height: 1.2;
+  }
+  .section-desc {
+    text-align: center;
+    color: var(--gray);
+    max-width: 600px;
+    margin: 0 auto 50px;
+    font-size: 15px;
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .product-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.5), 0 0 40px var(--glow);
+  }
+  .product-card.featured {
+    border-color: var(--gold);
+    box-shadow: 0 0 30px rgba(201,168,76,0.15);
+  }
+
+  .card-ribbon {
+    position: absolute;
+    top: 16px; right: -26px;
+    background: var(--gold);
+    color: #000;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 5px 30px;
+    transform: rotate(45deg);
+    transform-origin: center;
+    right: -24px;
+    top: 18px;
+    z-index: 2;
+  }
+
+  .card-img {
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .card-img-book {
+    background: linear-gradient(135deg, #0C1A2E 0%, #1A2A4A 100%);
+  }
+  .card-img-book2 {
+    background: linear-gradient(135deg, #0C1F14 0%, #1A3822 100%);
+  }
+  .card-img-book3 {
+    background: linear-gradient(135deg, #1A0C0C 0%, #2A1A0C 100%);
+  }
+
+  .book-mockup {
+    width: 90px;
+    height: 120px;
+    position: relative;
+    transform: perspective(600px) rotateY(-12deg);
+    filter: drop-shadow(8px 8px 20px rgba(0,0,0,0.6));
+  }
+  .book-cover {
+    width: 90px;
+    height: 120px;
+    border-radius: 2px 6px 6px 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .book-cover-1 {
+    background: linear-gradient(160deg, #1E3A6E 0%, #0F1F40 100%);
+    border: 1px solid rgba(201,168,76,0.5);
+  }
+  .book-cover-2 {
+    background: linear-gradient(160deg, #1A3A2A 0%, #0C1F14 100%);
+    border: 1px solid rgba(100,200,120,0.4);
+  }
+  .book-cover-3 {
+    background: linear-gradient(160deg, #3A2010 0%, #1F1008 100%);
+    border: 1px solid rgba(201,168,76,0.4);
+  }
+  .book-icon {
+    font-size: 28px;
+    margin-bottom: 6px;
+  }
+  .book-title-mini {
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--gold2);
+    line-height: 1.3;
+  }
+  .book-spine {
+    position: absolute;
+    left: -10px; top: 0;
+    width: 10px;
+    height: 100%;
+    border-radius: 2px 0 0 2px;
+  }
+  .spine-1 { background: #0F1F40; }
+  .spine-2 { background: #0C1F14; }
+  .spine-3 { background: #1F1008; }
+
+  .card-body { padding: 24px; }
+  .card-tag {
+    display: inline-block;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 3px 10px;
+    border-radius: 2px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .tag-blue { background: rgba(30,58,110,0.5); color: #7BB8F0; border: 1px solid rgba(123,184,240,0.3); }
+  .tag-green { background: rgba(26,58,42,0.5); color: #7BD49A; border: 1px solid rgba(123,212,154,0.3); }
+  .tag-gold { background: rgba(122,98,48,0.3); color: var(--gold2); border: 1px solid var(--border); }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--white);
+    line-height: 1.3;
+  }
+  .card-desc {
+    font-size: 13.5px;
+    color: var(--gray);
+    line-height: 1.65;
+    margin-bottom: 18px;
+  }
+  .card-features {
+    list-style: none;
+    margin-bottom: 20px;
+  }
+  .card-features li {
+    font-size: 13px;
+    color: #A8B8C8;
+    padding: 4px 0;
+    padding-left: 20px;
+    position: relative;
+  }
+  .card-features li::before {
+    content: '✦';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+    font-size: 10px;
+    top: 6px;
+  }
+  .card-value {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+  .card-price-old { font-size: 13px; color: var(--gray); text-decoration: line-through; }
+  .card-price { font-family: 'Space Mono', monospace; font-size: 15px; color: var(--gold2); font-weight: 700; }
+
+  /* DIVIDER */
+  .divider {
+    max-width: 900px;
+    margin: 0 auto;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+  }
+
+  /* WHAT YOU GET */
+  .kit-section {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 70px 20px;
+  }
+
+  .kit-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    max-width: 900px;
+    margin: 0 auto;
+    align-items: center;
+  }
+
+  @media (max-width: 700px) {
+    .kit-grid { grid-template-columns: 1fr; }
+  }
+
+  .kit-books {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    align-items: flex-end;
+    padding: 30px 0;
+  }
+
+  .kit-book {
+    width: 100px;
+    height: 140px;
+    border-radius: 3px 8px 8px 3px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 8px;
+    text-align: center;
+    transition: transform 0.3s;
+    position: relative;
+    filter: drop-shadow(0 10px 30px rgba(0,0,0,0.6));
+  }
+  .kit-book:hover { transform: translateY(-8px) rotate(-2deg); }
+  .kit-book:nth-child(2) { height: 155px; width: 110px; transform: translateY(-10px); }
+  .kit-book:nth-child(2):hover { transform: translateY(-18px) rotate(1deg); }
+  .kit-book:nth-child(3) { transform: rotate(3deg); }
+  .kit-book:nth-child(3):hover { transform: translateY(-8px) rotate(5deg); }
+
+  .kb-1 { background: linear-gradient(160deg, #1E3A6E, #0F1F40); border: 1px solid rgba(201,168,76,0.5); }
+  .kb-2 { background: linear-gradient(160deg, #1A3A2A, #0C1F14); border: 1px solid rgba(100,200,120,0.4); }
+  .kb-3 { background: linear-gradient(160deg, #3A2010, #1F1008); border: 1px solid rgba(201,168,76,0.4); }
+
+  .kb-icon { font-size: 30px; margin-bottom: 6px; }
+  .kb-label { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: rgba(255,255,255,0.7); line-height: 1.4; }
+
+  .kit-info h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    line-height: 1.25;
+  }
+
+  .kit-item {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    margin-bottom: 18px;
+  }
+  .kit-num {
+    min-width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--gold-dim), var(--gold));
+    color: #000;
+    font-weight: 700;
+    font-size: 13px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .kit-text strong { display: block; font-size: 14px; color: var(--white); margin-bottom: 2px; }
+  .kit-text span { font-size: 12.5px; color: var(--gray); }
+
+  /* TRIGGERS / BENEFITS */
+  .benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  .benefit-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 26px 22px;
+    transition: border-color 0.3s, transform 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .benefit-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .benefit-card:hover { border-color: rgba(201,168,76,0.4); transform: translateY(-3px); }
+  .benefit-card:hover::before { opacity: 1; }
+  .benefit-icon { font-size: 28px; margin-bottom: 12px; }
+  .benefit-title { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+  .benefit-text { font-size: 13.5px; color: var(--gray); line-height: 1.65; }
+
+  /* TESTIMONIALS */
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  .testimonial {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 26px 22px;
+    position: relative;
+  }
+  .testimonial::before {
+    content: '"';
+    position: absolute;
+    top: 12px; left: 18px;
+    font-family: 'Playfair Display', serif;
+    font-size: 64px;
+    color: var(--gold);
+    opacity: 0.25;
+    line-height: 1;
+  }
+  .test-stars { color: var(--gold2); font-size: 13px; margin-bottom: 12px; letter-spacing: 3px; }
+  .test-text { font-size: 13.5px; color: #B8C8D8; line-height: 1.7; margin-bottom: 18px; font-style: italic; }
+  .test-author { display: flex; align-items: center; gap: 12px; }
+  .test-avatar {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold-dim), var(--gold));
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px; color: #000;
+    flex-shrink: 0;
+  }
+  .test-name { font-size: 13px; font-weight: 600; color: var(--white); }
+  .test-city { font-size: 11px; color: var(--gray); }
+
+  /* PRICE SECTION */
+  .price-section {
+    padding: 80px 20px;
+    text-align: center;
+    position: relative;
+  }
+  .price-section::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(201,168,76,0.05) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .price-box {
+    background: var(--bg2);
+    border: 1px solid var(--gold);
+    border-radius: 16px;
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 48px 40px;
+    position: relative;
+    box-shadow: 0 0 60px rgba(201,168,76,0.1), 0 30px 80px rgba(0,0,0,0.5);
+  }
+  .price-box::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(201,168,76,0.3), transparent, rgba(201,168,76,0.3));
+    z-index: -1;
+  }
+
+  .price-tag-small { font-size: 12px; color: var(--gray); text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 8px; }
+  .price-old-big {
+    font-size: 18px;
+    color: var(--gray);
+    text-decoration: line-through;
+    margin-bottom: 4px;
+    font-family: 'Space Mono', monospace;
+  }
+  .price-main {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(52px, 10vw, 80px);
+    font-weight: 900;
+    line-height: 1;
+    background: linear-gradient(135deg, var(--gold), var(--gold2), #E8B44C);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 6px;
+  }
+  .price-installment {
+    font-size: 14px;
+    color: var(--gray);
+    margin-bottom: 32px;
+  }
+  .price-installment strong { color: var(--white); }
+
+  .price-includes {
+    list-style: none;
+    text-align: left;
+    margin-bottom: 32px;
+    background: var(--bg3);
+    border-radius: 10px;
+    padding: 20px 22px;
+  }
+  .price-includes li {
+    font-size: 13.5px;
+    color: #B0C0D0;
+    padding: 6px 0;
+    padding-left: 24px;
+    position: relative;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .price-includes li:last-child { border-bottom: none; }
+  .price-includes li::before {
+    content: '✓';
+    position: absolute; left: 0;
+    color: var(--green);
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .price-includes li .item-val {
+    float: right;
+    color: var(--gray);
+    font-size: 12px;
+    text-decoration: line-through;
+  }
+
+  .total-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0 0;
+    border-top: 1px solid var(--border);
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--gray);
+  }
+  .total-line strong { color: var(--gold2); font-size: 14px; font-family: 'Space Mono', monospace; }
+
+  /* CTA BUTTON */
+  .btn-cta {
+    display: block;
+    width: 100%;
+    background: linear-gradient(135deg, #B8860B 0%, #D4A017 30%, var(--gold2) 60%, #D4A017 100%);
+    color: #0A0600;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 20px 32px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+    font-family: 'DM Sans', sans-serif;
+    margin-bottom: 16px;
+    box-shadow: 0 8px 30px rgba(201,168,76,0.3);
+  }
+  .btn-cta::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+    transition: left 0.5s;
+  }
+  .btn-cta:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(201,168,76,0.45); }
+  .btn-cta:hover::after { left: 150%; }
+  .btn-cta:active { transform: translateY(0); }
+
+  .btn-secondary {
+    display: block;
+    width: 100%;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--gray);
+    font-size: 14px;
+    padding: 14px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.25s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .btn-secondary:hover { border-color: var(--gold); color: var(--gold2); }
+
+  .guarantee-strip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+    font-size: 12px;
+    color: var(--gray);
+  }
+  .guarantee-strip span { font-size: 20px; }
+
+  /* GUARANTEE */
+  .guarantee-section {
+    background: linear-gradient(135deg, #0A1A0A, #0A0A0A, #1A0A0A);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 60px 20px;
+  }
+  .guarantee-box {
+    max-width: 700px;
+    margin: 0 auto;
+    display: flex;
+    gap: 36px;
+    align-items: center;
+  }
+  @media (max-width: 600px) {
+    .guarantee-box { flex-direction: column; text-align: center; }
+  }
+  .guarantee-badge-wrap {
+    flex-shrink: 0;
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1a2a0a, #0a1a0a);
+    border: 3px solid var(--green);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 30px rgba(34,197,94,0.2);
+  }
+  .guarantee-badge-wrap span { font-size: 36px; }
+  .guarantee-badge-wrap p { font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--green); font-weight: 700; margin-top: 2px; }
+  .guarantee-text h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--green);
+  }
+  .guarantee-text p { font-size: 14px; color: var(--gray); line-height: 1.7; }
+
+  /* FAQ */
+  .faq-list { max-width: 720px; margin: 0 auto; }
+  .faq-item {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    background: var(--bg2);
+  }
+  .faq-q {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 22px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14.5px;
+    transition: background 0.2s;
+    user-select: none;
+  }
+  .faq-q:hover { background: rgba(201,168,76,0.05); }
+  .faq-icon { color: var(--gold); font-size: 20px; transition: transform 0.3s; flex-shrink: 0; }
+  .faq-item.open .faq-icon { transform: rotate(45deg); }
+  .faq-a {
+    font-size: 13.5px;
+    color: var(--gray);
+    line-height: 1.7;
+    padding: 0 22px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.3s;
+  }
+  .faq-item.open .faq-a { max-height: 200px; padding: 0 22px 18px; }
+
+  /* URGENCY */
+  .urgency-banner {
+    background: linear-gradient(90deg, #1A0808, #2A1010, #1A0808);
+    border: 1px solid rgba(239,68,68,0.3);
+    border-radius: 10px;
+    padding: 20px 28px;
+    max-width: 700px;
+    margin: 0 auto 40px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .urgency-icon { font-size: 30px; flex-shrink: 0; }
+  .urgency-text strong { display: block; font-size: 15px; color: #FCA5A5; margin-bottom: 2px; }
+  .urgency-text span { font-size: 13px; color: #9B7070; }
+
+  /* STICKY BAR */
+  .sticky-buy {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(7, 10, 15, 0.97);
+    border-top: 1px solid var(--gold);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+    transform: translateY(100%);
+    transition: transform 0.4s ease;
+    flex-wrap: wrap;
+  }
+  .sticky-buy.visible { transform: translateY(0); }
+  .sticky-info { font-size: 13px; color: var(--gray); }
+  .sticky-info strong { display: block; font-size: 16px; color: var(--white); font-family: 'Playfair Display', serif; }
+  .sticky-price { font-family: 'Space Mono', monospace; color: var(--gold2); font-size: 20px; font-weight: 700; white-space: nowrap; }
+  .sticky-btn {
+    background: linear-gradient(135deg, #B8860B, var(--gold2));
+    color: #0A0600;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+    font-family: 'DM Sans', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    transition: opacity 0.2s;
+  }
+  .sticky-btn:hover { opacity: 0.9; }
+
+  /* PAYMENT ICONS */
+  .payment-icons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+  .pay-icon {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 4px 10px;
+    font-size: 11px;
+    color: var(--gray);
+    letter-spacing: 0.08em;
+    font-weight: 600;
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 30px 20px 100px;
+    font-size: 12px;
+    color: #3A4A5A;
+    line-height: 1.8;
+    border-top: 1px solid rgba(255,255,255,0.04);
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+  @keyframes pulse-gold {
+    0%, 100% { box-shadow: 0 0 20px rgba(201,168,76,0.15); }
+    50% { box-shadow: 0 0 40px rgba(201,168,76,0.35); }
+  }
+
+  .hero h1, .hero-sub { animation: fadeUp 0.8s ease forwards; }
+  .hero-sub { animation-delay: 0.15s; opacity: 0; }
+  .stats-row { animation: fadeUp 0.8s 0.3s ease forwards; opacity: 0; }
+
+  .price-box { animation: pulse-gold 4s infinite; }
+
+  /* RESPONSIVE */
+  @media (max-width: 640px) {
+    .hero { padding: 50px 16px 40px; }
+    .price-box { padding: 32px 22px; }
+    .stats-row { display: grid; grid-template-columns: 1fr 1fr; }
+    .stat-item:nth-child(2) { border-right: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ANNOUNCEMENT BAR -->
+<div class="bar">
+  🔥 <span>OFERTA ESPECIAL:</span> Kit completo com 3 e-books por apenas <strong>R$ 19,99</strong> — Vagas limitadas
+</div>
+
+<!-- COUNTDOWN TIMER -->
+<div class="timer-bar">
+  <div class="timer-label">⏱ Promoção encerra em:</div>
+  <div class="timer-digits">
+    <div class="digit-block"><span id="h">23</span><small class="digit-unit">horas</small></div>
+    <span class="digit-sep">:</span>
+    <div class="digit-block"><span id="m">49</span><small class="digit-unit">min</small></div>
+    <span class="digit-sep">:</span>
+    <div class="digit-block"><span id="s">38</span><small class="digit-unit">seg</small></div>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="badge">✦ Kit Completo — Liberdade Financeira ✦</div>
+  <h1>Aprenda a <em>Investir do Zero</em><br>e Viver de Renda no Brasil</h1>
+  <p class="hero-sub">
+    3 guias definitivos que ensinam tudo que os bancos e escolas nunca te contaram do controle de dívidas à independência financeira total.
+  </p>
+  <div class="stats-row">
+    <div class="stat-item">
+      <div class="stat-num">+120</div>
+      <div class="stat-label">Páginas de Conteúdo</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">80+</div>
+      <div class="stat-label">Ativos Analisados</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">8</div>
+      <div class="stat-label">Estratégias Avançadas</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">100%</div>
+      <div class="stat-label">Mercado Brasileiro</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="section" style="padding-top: 20px;">
+  <p class="section-label">O que está incluso no kit</p>
+  <h2 class="section-title">Seus 3 Guias <em style="color: var(--gold2);">Definitivos</em></h2>
+  <p class="section-desc">Do básico ao avançado. Cada guia foi pensado para uma etapa diferente da sua jornada financeira.</p>
+
+  <div class="products-grid">
+
+    <!-- BOOK 1 -->
+    <div class="product-card">
+      <div class="card-img card-img-book">
+        <div class="book-mockup">
+          <div class="book-cover book-cover-1">
+            <div class="book-spine spine-1"></div>
+            <div class="book-icon">📈</div>
+            <div class="book-title-mini">Guia Definitivo de Investimentos</div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <span class="card-tag tag-blue">VOLUME I — FUNDAMENTOS</span>
+        <h3 class="card-title">Guia Definitivo de Investimentos</h3>
+        <p class="card-desc">Tudo sobre Tesouro Direto, CDBs, LCI, LCA, ações, FIIs, ETFs, BDRs, previdência e criptomoedas — com foco 100% no mercado brasileiro.</p>
+        <ul class="card-features">
+          <li>12+ classes de ativos analisadas em profundidade</li>
+          <li>Carteiras modelo por perfil (conservador ao arrojado)</li>
+          <li>Como comparar retorno líquido após IR</li>
+          <li>Análise macro e ciclos de mercado</li>
+          <li>Glossário financeiro completo</li>
+        </ul>
+        <div class="card-value">
+          <span class="card-price-old">R$ 49,00</span>
+          <span class="card-price">Incluso no kit</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOOK 2 -->
+    <div class="product-card featured">
+      <div class="card-ribbon">POPULAR</div>
+      <div class="card-img card-img-book2">
+        <div class="book-mockup">
+          <div class="book-cover book-cover-2">
+            <div class="book-spine spine-2"></div>
+            <div class="book-icon">🏦</div>
+            <div class="book-title-mini">Liberdade Financeira do Zero</div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <span class="card-tag tag-green">VOLUME II — PASSO A PASSO</span>
+        <h3 class="card-title">Liberdade Financeira: Do Zero ao Viver de Renda</h3>
+        <p class="card-desc">O guia completo passo a passo: elimine dívidas, organize as finanças, construa reserva e comece a investir — em 12 meses.</p>
+        <ul class="card-features">
+          <li>Método definitivo para eliminar dívidas com juros 436% a.a.</li>
+          <li>Orçamento base zero — controle de cada centavo</li>
+          <li>A matemática da independência financeira</li>
+          <li>Plano de ação em 12 meses com metas claras</li>
+          <li>Estratégias legais para pagar menos IR</li>
+        </ul>
+        <div class="card-value">
+          <span class="card-price-old">R$ 49,00</span>
+          <span class="card-price">Incluso no kit</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOOK 3 -->
+    <div class="product-card">
+      <div class="card-img card-img-book3">
+        <div class="book-mockup">
+          <div class="book-cover book-cover-3">
+            <div class="book-spine spine-3"></div>
+            <div class="book-icon">🚀</div>
+            <div class="book-title-mini">Aceleração Financeira Avançada</div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <span class="card-tag tag-gold">VOLUME III — AVANÇADO</span>
+        <h3 class="card-title">Liberdade Financeira Avançada: Aceleração</h3>
+        <p class="card-desc">Psicologia do investidor, os 12 erros que destroem patrimônio, otimização fiscal e as 5 alavancas que aceleram sua independência financeira.</p>
+        <ul class="card-features">
+          <li>8 estratégias avançadas de alocação</li>
+          <li>Como criar um sistema de decisão à prova de emoções</li>
+          <li>Otimização fiscal: PGBL, holdings e isenções</li>
+          <li>Simulações reais: quanto precisa para viver de renda</li>
+          <li>Proteção e blindagem patrimonial</li>
+        </ul>
+        <div class="card-value">
+          <span class="card-price-old">R$ 49,00</span>
+          <span class="card-price">Incluso no kit</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- KIT PRESENTATION -->
+<div class="kit-section">
+  <div class="kit-grid">
+    <div class="kit-books">
+      <div class="kit-book kb-1">
+        <div class="kb-icon">📈</div>
+        <div class="kb-label">Guia Definitivo de Investimentos</div>
+      </div>
+      <div class="kit-book kb-2">
+        <div class="kb-icon">🏦</div>
+        <div class="kb-label">Do Zero ao Viver de Renda</div>
+      </div>
+      <div class="kit-book kb-3">
+        <div class="kb-icon">🚀</div>
+        <div class="kb-label">Aceleração Financeira</div>
+      </div>
+    </div>
+    <div class="kit-info">
+      <h3>Uma jornada completa em 3 volumes</h3>
+      <div class="kit-item">
+        <div class="kit-num">1</div>
+        <div class="kit-text">
+          <strong>Aprenda os fundamentos</strong>
+          <span>Entenda cada classe de ativo, como funciona o IR, qual produto usar em cada cenário e como montar sua primeira carteira.</span>
+        </div>
+      </div>
+      <div class="kit-item">
+        <div class="kit-num">2</div>
+        <div class="kit-text">
+          <strong>Construa as bases sólidas</strong>
+          <span>Saia das dívidas, monte sua reserva de emergência e comece a investir com método e consistência — passo a passo em 12 meses.</span>
+        </div>
+      </div>
+      <div class="kit-item">
+        <div class="kit-num">3</div>
+        <div class="kit-text">
+          <strong>Acelere rumo à independência</strong>
+          <span>Domine a psicologia do investidor, otimize sua carga tributária e use as 5 alavancas que encurtam em anos o caminho até a independência financeira</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BENEFITS -->
+<section class="section">
+  <p class="section-label">Por que escolher este kit</p>
+  <h2 class="section-title">O Conhecimento que<br><em style="color: var(--gold2);">Transforma Finanças</em></h2>
+  <p class="section-desc">Conteúdo prático, baseado no mercado brasileiro, direto ao ponto.</p>
+
+  <div class="benefits-grid">
+    <div class="benefit-card">
+      <div class="benefit-icon">🇧🇷</div>
+      <div class="benefit-title">100% Brasil</div>
+      <p class="benefit-text">Tesouro Direto, FIIs, CDB, LCI, Selic, IPCA — tudo pensado para o investidor brasileiro, com exemplos reais e tributação correta.</p>
+    </div>
+    <div class="benefit-card">
+      <div class="benefit-icon">⚡</div>
+      <div class="benefit-title">Do Zero ao Avançado</div>
+      <p class="benefit-text">Não importa se você está endividado ou se já investe há anos. Os 3 volumes cobrem desde o básico até estratégias que a maioria nunca conhece.</p>
+    </div>
+    <div class="benefit-card">
+      <div class="benefit-icon">🧠</div>
+      <div class="benefit-title">Psicologia + Técnica</div>
+      <p class="benefit-text">A diferença entre o investidor mediano e o excelente não é técnica — é emocional. O Volume III ensina como criar um sistema de decisão que protege seu patrimônio.</p>
+    </div>
+    <div class="benefit-card">
+      <div class="benefit-icon">📊</div>
+      <div class="benefit-title">Simulações Reais</div>
+      <p class="benefit-text">Tabelas, cálculos e simulações concretas: quanto precisa poupar, em quanto tempo chega à IF, qual o impacto de cada 1% de rentabilidade.</p>
+    </div>
+    <div class="benefit-card">
+      <div class="benefit-icon">💸</div>
+      <div class="benefit-title">Economia Fiscal</div>
+      <p class="benefit-text">Estratégias legais que podem equivaler a 1–2% a.a. de retorno extra — sem risco adicional. PGBL, LCI/LCA, isenções: você aprende tudo.</p>
+    </div>
+    <div class="benefit-card">
+      <div class="benefit-icon">🔒</div>
+      <div class="benefit-title">Proteção Patrimonial</div>
+      <p class="benefit-text">Construir riqueza é metade do trabalho. O Volume III ensina como proteger o que foi construído: seguros, holdings, testamento e blindagem jurídica.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section" style="background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <p class="section-label">O que dizem os leitores</p>
+  <h2 class="section-title">Resultados <em style="color: var(--gold2);">Reais</em></h2>
+  <p class="section-desc" style="margin-bottom: 40px;">Pessoas comuns que mudaram sua relação com o dinheiro usando estes guias.</p>
+
+  <div class="testimonials-grid">
+    <div class="testimonial">
+      <div class="test-stars">★★★★★</div>
+      <p class="test-text">Comecei com R$4.000 de dívida no cartão e achei que nunca sairia disso. Em 8 meses seguindo o método do guia, zerei as dívidas e já tenho R$10.000 investidos no Tesouro Selic. Mudou minha vida.</p>
+      <div class="test-author">
+        <div class="test-avatar">LM</div>
+        <div>
+          <div class="test-name">Lucas M.</div>
+          <div class="test-city">São Paulo, SP</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial">
+      <div class="test-stars">★★★★★</div>
+      <p class="test-text">Já investia há 2 anos mas nunca otimizava o IR. Com o Volume III aprendi a usar PGBL corretamente e economizo quase R$ 3.500 por ano em imposto. Isso reinvestido é dinheiro demais no longo prazo.</p>
+      <div class="test-author">
+        <div class="test-avatar">CR</div>
+        <div>
+          <div class="test-name">Camila R.</div>
+          <div class="test-city">Curitiba, PR</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial">
+      <div class="test-stars">★★★★★</div>
+      <p class="test-text">O Guia Definitivo de Investimentos é o melhor material sobre FIIs que já li em português. A tabela de cenários, por exemplo, sozinha já valeu muito mais do que paguei pelo kit.</p>
+      <div class="test-author">
+        <div class="test-avatar">RF</div>
+        <div>
+          <div class="test-name">Rodrigo F.</div>
+          <div class="test-city">Belo Horizonte, MG</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICE SECTION -->
+<section class="price-section">
+  <p class="section-label">Oferta Exclusiva</p>
+  <h2 class="section-title" style="margin-bottom: 40px;">Invista <em style="color: var(--gold2);">R$ 19,99</em><br>para transformar suas finanças</h2>
+
+  <div class="urgency-banner">
+    <span class="urgency-icon">🔥</span>
+    <div class="urgency-text">
+      <strong>Atenção: Preço promocional por tempo limitado</strong>
+      <span>O kit será vendido individualmente por R$ 49,00 cada. Após o período de lançamento, o preço sobe.</span>
+    </div>
+  </div>
+
+  <div class="price-box">
+    <div class="price-tag-small">Valor total separado</div>
+    <div class="price-old-big">R$ 141,00</div>
+    <div class="price-tag-small" style="margin-top: 8px;">Hoje por apenas</div>
+    <div class="price-main">R$ 19,99</div>
+    <br>
+
+    <ul class="price-includes">
+      <li>📈 Guia Definitivo de Investimentos <span class="item-val">R$ 49,00</span></li>
+      <li>🏦 Liberdade Financeira: Do Zero ao Viver de Renda <span class="item-val">R$ 49,00</span></li>
+      <li>🚀 Liberdade Financeira Avançada — Aceleração <span class="item-val">R$ 49,00</span></li>
+      <li>✅ Entrega imediata por e-mail</li>
+      <li>✅ Acesso vitalício — leia no celular, tablet ou PC</li>
+      <li>✅ Atualizações futuras inclusas</li>
+      <div class="total-line">
+        <span>Você economiza:</span>
+        <strong>R$ 121,01 (85% OFF)</strong>
+      </div>
+    </ul>
+
+    <!-- LINK DO CHECKOUT AQUI -->
+    <a href="#LINK_CHECKOUT_AQUI" class="btn-cta">
+      🔒 QUERO MEU KIT AGORA — R$ 19,99
+    </a>
+    <a href="#LINK_CHECKOUT_AQUI" class="btn-secondary">
+      Comprar agora com cartão, Pix ou boleto
+    </a>
+
+    <div class="guarantee-strip">
+      <span>🛡️</span> Compra 100% segura &nbsp;•&nbsp; Pagamento criptografado
+    </div>
+
+    <div class="payment-icons" style="margin-top: 14px;">
+      <span class="pay-icon">PIX</span>
+      <span class="pay-icon">VISA</span>
+      <span class="pay-icon">MASTER</span>
+      <span class="pay-icon">BOLETO</span>
+      <span class="pay-icon">ELO</span>
+    </div>
+  </div>
+</section>
+
+<!-- GUARANTEE -->
+<div class="guarantee-section">
+  <div class="guarantee-box">
+    <div class="guarantee-badge-wrap">
+      <span>✅</span>
+      <p>Garantia</p>
+    </div>
+    <div class="guarantee-text">
+      <h4>Garantia Incondicional de 7 Dias</h4>
+      <p>Se por qualquer motivo você não estiver 100% satisfeito com o conteúdo, basta enviar um e-mail em até 7 dias após a compra e devolvemos integralmente o seu dinheiro. Sem burocracia. Sem perguntas. O risco é todo nosso.</p>
+    </div>
+  </div>
+</div>
+
+<!-- FAQ -->
+<section class="section">
+  <p class="section-label">Dúvidas frequentes</p>
+  <h2 class="section-title" style="margin-bottom: 40px;">Perguntas <em style="color: var(--gold2);">Respondidas</em></h2>
+
+  <div class="faq-list">
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        Como recebo os e-books após a compra?
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">Imediatamente após a confirmação do pagamento (Pix é instantâneo, cartão em segundos), você recebe um e-mail com os 3 PDFs para download. Não precisa esperar nada.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        Funciona para quem está começando do zero?
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">Sim! O Volume II (Do Zero ao Viver de Renda) foi pensado exatamente para quem está endividado ou nunca investiu nada. Ele começa pelo diagnóstico financeiro e guia você passo a passo. Já o Volume I explica cada tipo de investimento com linguagem acessível.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        Este material substitui um assessor financeiro?
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">Os guias têm caráter educativo e informativo — não são recomendações personalizadas de investimento. Eles te dão o conhecimento para tomar decisões mais informadas e entender o que um assessor te propõe. Para decisões complexas, consulte um CFP® ou CEA® credenciado pela ANBIMA.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        Posso ler no celular ou tablet?
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">Sim! Os e-books estão em formato PDF e funcionam perfeitamente em qualquer dispositivo — celular, tablet, computador. Basta salvar no seu dispositivo preferido ou na nuvem (Google Drive, iCloud) para acessar sempre.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        O conteúdo é atualizado?
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">Sim. Sempre que houver mudanças relevantes na legislação, tributação ou novos produtos no mercado brasileiro, os guias são atualizados. Quem já comprou recebe as novas versões gratuitamente.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        Por que o preço está tão baixo?
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">Este é um preço de lançamento para o kit. A intenção é tornar a educação financeira acessível ao maior número de pessoas. Após o período promocional, cada volume voltará a ser vendido separadamente por R$ 49,00 cada.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section style="padding: 60px 20px 80px; text-align: center; background: var(--bg2); border-top: 1px solid var(--border);">
+  <div class="badge" style="margin-bottom: 20px;">Última chamada</div>
+  <h2 class="section-title" style="margin-bottom: 16px;">Você está a um clique de<br><em style="color: var(--gold2);">mudar suas finanças</em></h2>
+  <p style="color: var(--gray); max-width: 560px; margin: 0 auto 36px; font-size: 15px; line-height: 1.7;">
+    Cada dia que você adia o aprendizado é um dia que os juros trabalham <em>contra</em> você — não a favor. O momento perfeito não existe. O melhor momento é agora.
+  </p>
+  <!-- LINK DO CHECKOUT AQUI -->
+  <a href="#LINK_CHECKOUT_AQUI" class="btn-cta" style="max-width: 480px; margin: 0 auto 16px; display: block;">
+    🔒 GARANTIR MEU KIT — R$ 19,99
+  </a>
+  <p style="font-size: 12px; color: #3A4A5A;">7 dias de garantia &nbsp;•&nbsp; Entrega imediata &nbsp;•&nbsp; </p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 — Kit Liberdade Financeira. Todos os direitos reservados.</p>
+  <p style="margin-top: 8px;">Este material tem caráter exclusivamente educativo e informativo. Não constitui recomendação de investimento personalizada.<br>
+  Rentabilidade passada não garante retornos futuros. Consulte um assessor financeiro certificado (CFP® ou CEA®) antes de tomar decisões.</p>
+  <p style="margin-top: 8px;"><a href="#" style="color: #3A4A5A; text-decoration: none;">Termos de Uso</a> &nbsp;•&nbsp; <a href="#" style="color: #3A4A5A; text-decoration: none;">Política de Privacidade</a> &nbsp;•&nbsp; <a href="#" style="color: #3A4A5A; text-decoration: none;">Contato</a></p>
+</footer>
+
+<!-- STICKY BAR -->
+<div class="sticky-buy" id="stickyBar">
+  <div class="sticky-info">
+    <strong>Kit Liberdade Financeira — 3 E-books</strong>
+    De R$ 147,00 por:
+  </div>
+  <div class="sticky-price">R$ 19,99</div>
+  <!-- LINK DO CHECKOUT AQUI -->
+  <a href="#LINK_CHECKOUT_AQUI" class="sticky-btn">Comprar Agora</a>
+</div>
+
+<script>
+  // COUNTDOWN TIMER
+  let totalSeconds = 23 * 3600 + 47 * 60 + 38;
+  function updateTimer() {
+    if (totalSeconds <= 0) { totalSeconds = 24 * 3600; }
+    const h = Math.floor(totalSeconds / 3600);
+    const m = Math.floor((totalSeconds % 3600) / 60);
+    const s = totalSeconds % 60;
+    document.getElementById('h').textContent = String(h).padStart(2, '0');
+    document.getElementById('m').textContent = String(m).padStart(2, '0');
+    document.getElementById('s').textContent = String(s).padStart(2, '0');
+    totalSeconds--;
+  }
+  updateTimer();
+  setInterval(updateTimer, 1000);
+
+  // STICKY BAR
+  const sticky = document.getElementById('stickyBar');
+  window.addEventListener('scroll', () => {
+    sticky.classList.toggle('visible', window.scrollY > 600);
+  });
+
+  // FAQ ACCORDION
+  function toggleFaq(el) {
+    const item = el.parentElement;
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+
+  // INTERSECTION OBSERVER for fade-in
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.animation = 'fadeUp 0.6s ease forwards';
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.product-card, .benefit-card, .testimonial').forEach(el => {
+    el.style.opacity = '0';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
